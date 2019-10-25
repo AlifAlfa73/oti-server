@@ -123,6 +123,7 @@ exports.reference_detail_nodb = function (req, res) {
         })
         .then(html => {
             const $ = cheerio.load(html);
+            console.log(html);
             let link = $(".search__result-link").attr("href");
             console.log(link);
             if (link != undefined)
