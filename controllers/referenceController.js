@@ -109,12 +109,7 @@ exports.reference_detail_nodb = function (req, res) {
 
 
         puppeteer
-        .launch({
-            'args' : [
-              '--no-sandbox',
-              '--disable-setuid-sandbox'
-            ]
-          })
+        .launch()
         .then(browser => browser.newPage())
         .then(page => {
             return page.goto(url).then(function() {
@@ -125,8 +120,12 @@ exports.reference_detail_nodb = function (req, res) {
             const $ = cheerio.load(html);
             let link = $(".search__result-link").attr("href");
             console.log(link);
-            reply_message = encodeURI("Permasalahan tersebut dapat diakses pada artikel berikut " + link);
-            request('https://api.telegram.org/bot1056317114:AAGsRcsenzMPzFTppP2R3hhtwbbaeE_oF5c/sendMessage?chat_id=' + req.body.sender_id +'&text=' + reply_message, { json: true }, (err, result, body) => {
+            if (link != undefined)
+                reply_message = encodeURI("Permasalahan tersebut dapat diakses pada artikel berikut " + link);
+            else
+                reply_message =encodeURI("Permasalahan tersebut dapat diakses pada website berikut https://raisingchildren.net.au/");
+
+                request('https://api.telegram.org/bot1056317114:AAGsRcsenzMPzFTppP2R3hhtwbbaeE_oF5c/sendMessage?chat_id=' + req.body.sender_id +'&text=' + reply_message, { json: true }, (err, result, body) => {
                 if (err) { 
                     return console.log(err); 
                 } else {
