@@ -13,20 +13,21 @@ const bodyParser = require('body-parser');
 const reference = require('./routes/route'); // Imports routes for the products
 const port = 8765;
 
-// Set up mongoose connection
-const mongoose = require('mongoose');
-const dev_uri = "mongodb+srv://bebek:bebekayam@oti-vhbeh.mongodb.net/test?retryWrites=true&w=majority";
+// // Set up mongoose connection
+// const mongoose = require('mongoose');
+// const dev_uri = "mongodb+srv://bebek:bebekayam@oti-vhbeh.mongodb.net/test?retryWrites=true&w=majority";
 const http = require("http");
 
-let mongoDB = process.env.MONGODB_URI || dev_uri;
-mongoose.connect(mongoDB,  { useNewUrlParser: true });
-mongoose.Promise = global.Promise;
-let db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+// let mongoDB = process.env.MONGODB_URI || dev_uri;
+// mongoose.connect(mongoDB,  { useNewUrlParser: true });
+// mongoose.Promise = global.Promise;
+// let db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 setInterval(function() {
     http.get("https://nameless-headland-54694.herokuapp.com/reference/test");
 }, 300000); // every 5 minutes (300000)
+
 
 //Set up Body Parser
 app.use(bodyParser.json());

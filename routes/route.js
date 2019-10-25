@@ -8,5 +8,6 @@ const reference_controller = require('../controllers/referenceController');
 router.get('/test', reference_controller.test);
 router.post('/create', reference_controller.reference_create);
 router.get('/search', reference_controller.reference_detail);
+router.get('/searchnodb', reference_controller.reference_detail_nodb);
 
 module.exports = router;
