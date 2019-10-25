@@ -106,40 +106,65 @@ exports.reference_detail_nodb = function (req, res) {
         var query = encodeURI(trans.text);
         var url = 'https://raisingchildren.net.au/search?query=' + query;
         console.log(url);
+        reply_message =encodeURI("Permasalahan tersebut dapat diakses pada website berikut https://raisingchildren.net.au/");
 
+        (async () => {
+            console.log("masuk url0");
 
-        puppeteer
-        .launch({
-            'args' : [
-              '--no-sandbox',
-              '--disable-setuid-sandbox'
-            ]
-          })
-        .then(browser => browser.newPage())
-        .then(page => {
-            return page.goto(url).then(function() {
-            return page.content();
-            });
-        })
-        .then(html => {
+            const browser = await puppeteer.launch();
+            console.log("masuk url00");
+
+            const page = await browser.newPage();
+            await page.goto(url);
+            console.log("masuk url");
+            await page.waitForFunction(
+              'document.querySelector(".search__result-link")',
+            );
+            console.log("masuk url2");
+            // await page.screenshot({path: 'page.png', fullPage:true});
+            html = await page.content();
+            // console.log(page.content());  
             const $ = cheerio.load(html);
-            console.log(html);
+            // console.log(html);
             let link = $(".search__result-link").attr("href");
             console.log(link);
             if (link != undefined)
                 reply_message = encodeURI("Permasalahan tersebut dapat diakses pada artikel berikut " + link);
-            else
-                reply_message =encodeURI("Permasalahan tersebut dapat diakses pada website berikut https://raisingchildren.net.au/");
+            await browser.close();
+          })();
 
-                request('https://api.telegram.org/bot1056317114:AAGsRcsenzMPzFTppP2R3hhtwbbaeE_oF5c/sendMessage?chat_id=' + req.body.sender_id +'&text=' + reply_message, { json: true }, (err, result, body) => {
-                if (err) { 
-                    return console.log(err); 
-                } else {
-                    res.send('Scrapped successfully');
-                }
-            });
-        })
-        .catch(console.error);
+        request('https://api.telegram.org/bot1056317114:AAGsRcsenzMPzFTppP2R3hhtwbbaeE_oF5c/sendMessage?chat_id=' + req.body.sender_id +'&text=' + reply_message, { json: true }, (err, result, body) => {
+            if (err) { 
+                return console.log(err); 
+            } else {
+                res.send('Scrapped successfully');
+            }
+        });
+        // puppeteer
+        // .launch({
+        //     'args' : [
+        //       '--no-sandbox',
+        //       '--disable-setuid-sandbox'
+        //     ]
+        //   })
+        // .then(browser => browser.newPage())
+        // .then(page => {
+        //     return page.goto(url).then(function() {
+        //     return page.content();
+        //     });
+        // })
+        // .then(html => {
+            
+
+        //         request('https://api.telegram.org/bot1056317114:AAGsRcsenzMPzFTppP2R3hhtwbbaeE_oF5c/sendMessage?chat_id=' + req.body.sender_id +'&text=' + reply_message, { json: true }, (err, result, body) => {
+        //         if (err) { 
+        //             return console.log(err); 
+        //         } else {
+        //             res.send('Scrapped successfully');
+        //         }
+        //     });
+        // })
+        // .catch(console.error);
                     // request('https://raisingchildren.net.au/search?query=how%20to%20stop%20siblings%20fighting%20teen%20years', { json: true }, (err, res, body) => {
                     //     if (err) { 
                     //         return console.log(err); 
