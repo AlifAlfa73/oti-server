@@ -56,19 +56,25 @@ exports.reference_detail = function (req, res) {
                         const $ = cheerio.load(html);
                         let link = $(".search__result-link").attr("href");
                         console.log(link);
-
-                        let reference = new Reference(
-                            {
-                                text: trans.text,
-                                link: link
+                        reply_message = encodeURI("Permasalahan tersebut dapat diakses pada artikel berikut " + link);
+                        request('https://api.telegram.org/bot1056317114:AAGsRcsenzMPzFTppP2R3hhtwbbaeE_oF5c/sendMessage?chat_id=' + req.body.sender_id +'&text=' + reply_message, { json: true }, (err, res, body) => {
+                            if (err) { 
+                                return console.log(err); 
+                            } else {
+                                let reference = new Reference(
+                                    {
+                                        text: trans.text,
+                                        link: link
+                                    }
+                                );      
+                            
+                                reference.save(function (err) {
+                                    if (err) {
+                                        return next(err);
+                                    }
+                                    res.send('Scrapped successfully');
+                                });
                             }
-                        );      
-                    
-                        reference.save(function (err) {
-                            if (err) {
-                                return next(err);
-                            }
-                            res.send('Scrapped successfully');
                         });
                     })
                     .catch(console.error);
