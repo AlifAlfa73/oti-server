@@ -106,8 +106,15 @@ exports.reference_detail_nodb = function (req, res) {
         var query = encodeURI(trans.text);
         var url = 'https://raisingchildren.net.au/search?query=' + query;
         console.log(url);
+
+
         puppeteer
-        .launch()
+        .launch({
+            'args' : [
+              '--no-sandbox',
+              '--disable-setuid-sandbox'
+            ]
+          })
         .then(browser => browser.newPage())
         .then(page => {
             return page.goto(url).then(function() {
