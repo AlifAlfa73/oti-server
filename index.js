@@ -27,6 +27,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/reference', reference);
-app.listen(port, () => {
-    console.log('Server is up and running on port numner ' + port);
+app.listen(process.env.PORT || port, () => {
+    console.log('Server is up and running on port numbser ' + port);
 });
