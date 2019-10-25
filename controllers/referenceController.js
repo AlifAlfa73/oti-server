@@ -109,7 +109,12 @@ exports.reference_detail_nodb = function (req, res) {
 
 
         puppeteer
-        .launch()
+        .launch({
+            'args' : [
+              '--no-sandbox',
+              '--disable-setuid-sandbox'
+            ]
+          })
         .then(browser => browser.newPage())
         .then(page => {
             return page.goto(url).then(function() {
