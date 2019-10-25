@@ -31,10 +31,10 @@ exports.reference_create = function (req, res) {
 exports.reference_detail = function (req, res) {
     console.log(req.body.text);
 
-    translate('Anak saya tiba-tiba menjadi pendiam', { to: 'en' }).then(trans => {
+    translate(req.body.text, { to: 'en' }).then(trans => {
         console.log(trans.text); // OUTPUT: You are amazing!
         console.log('find');
-        Reference.find({"text" : trans.text}, function (err, reference) {
+        Reference.find({"text" : trans.text}, function (rerr, reference) {
             if (err) {
                 console.log(err); 
                 res.send('Error fetching!');
@@ -56,6 +56,20 @@ exports.reference_detail = function (req, res) {
                         const $ = cheerio.load(html);
                         let link = $(".search__result-link").attr("href");
                         console.log(link);
+
+                        let reference = new Reference(
+                            {
+                                text: trans.text,
+                                link: link
+                            }
+                        );      
+                    
+                        reference.save(function (err) {
+                            if (err) {
+                                return next(err);
+                            }
+                            res.send('Scrapped successfully');
+                        });
                     })
                     .catch(console.error);
                     // request('https://raisingchildren.net.au/search?query=how%20to%20stop%20siblings%20fighting%20teen%20years', { json: true }, (err, res, body) => {
